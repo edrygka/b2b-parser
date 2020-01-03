@@ -87,7 +87,7 @@ async function parseAgents() {
     await page.type('input[name=password]', process.env.B2B_PASS)
     await page.waitFor(1000)
     await page.click('button.btn.btn-theme')
-    await page.waitForSelector('button.btn-icon.mobile-nav-toggle.d-lg-none')
+    await page.waitForSelector('div.page-wrap')
 
     // Go to networks page
     console.log('Going to https://my.b2b.jewelry/network')
