@@ -12,10 +12,11 @@ const DB_NAME = process.env.DB_NAME
 const connectionString = `postgres://${DB_USER}:${DB_PASS}@${DB_HOST}:${DB_PORT}/${DB_NAME}`
 
 module.exports.saveToDatabase = async (agentsInfo) => {
-  console.log('Opened connection to db')
+  console.log('Trying connect to db')
   const pool = new Pool({
     connectionString: connectionString,
   })
+  console.log('Connection established succesfuly')
 
   console.log('Saving agents to database...')
   for (let i = 0; i < agentsInfo.length; i++) {
