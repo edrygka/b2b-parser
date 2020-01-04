@@ -9,7 +9,7 @@ module.exports = class ParsingB2B {
 
   async start () {
     try {
-      const browser = await puppeteer.launch({ headless: false/*, executablePath: '/usr/bin/chromium-browser'*/, args: ['--no-sandbox'] })
+      const browser = await puppeteer.launch({ headless: true, executablePath: '/usr/bin/chromium-browser', args: ['--no-sandbox'] })
       this.page = await browser.newPage()
       console.log('Going to https://my.b2b.jewelry/')
       await this.page.goto('https://my.b2b.jewelry/', { waitUntil: 'networkidle2' })
