@@ -8,20 +8,12 @@ const ParserB2B = new Parser()
 
 
 async function main() {
-  try {
-    console.log('Initiated first parse process')
-    await proceedAgents()
-  } catch (err) {
-    console.log(err)
-  } 
+  console.log('Initiated first parse process')
+  await proceedAgents()
 
   cron.schedule('0 8 * * *', async () => {
     console.log('Started cron job ')
-    try {
-      await proceedAgents()
-    } catch (err) {
-      console.log(err)
-    } 
+    await proceedAgents()
   })
 
   process.on("unhandledRejection", async (reason, p) => {
