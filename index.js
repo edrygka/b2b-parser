@@ -15,32 +15,40 @@ const DB_NAME = process.env.DB_NAME
 
 const connectionString = `postgres://${DB_USER}:${DB_PASS}@${DB_HOST}:${DB_PORT}/${DB_NAME}`
 
-const pool = new Pool({
-  connectionString: connectionString,
-})
-
 async function main() {
+  const pool = new Pool({
+    connectionString: connectionString,
+  })
+  const browser = await puppeteer.launch({ headless: true, executablePath: '/usr/bin/chromium-browser', args: ['--no-sandbox'] })
+  const page = await browser.newPage()
+
   try {
     console.log('Initiated first parse process')
-    await proceedAgents()
+    await proceedAgents(pool, page)
   } catch (err) {
     console.log(err)
     await pool.end()
   } 
-  
+
   cron.schedule('0 8 * * *', async () => {
     console.log('Started cron job ')
     try {
-      await proceedAgents()
+      await proceedAgents(pool, page)
     } catch (err) {
       console.log(err)
       await pool.end()
     } 
   })
+
+  process.on("unhandledRejection", async (reason, p) => {
+    console.error("Unhandled Rejection at: Promise", p, "reason:", reason)
+    await page.close()
+    await pool.end()
+  })
 }
 
-async function proceedAgents() {
-  const agentsInfo = await parseAgents()
+async function proceedAgents(pool, page) {
+  const agentsInfo = await parseAgents(page)
   console.log('Parsing completed without errors')
 
   console.log('Started saving data to database')
@@ -69,12 +77,11 @@ async function proceedAgents() {
         agentsInfo[i].agents1Level, agentsInfo[i].agentsInNetwork, agentsInfo[i].oborotInMonth, agentHash ])
     }
   }
+  console.log('Saving completed')
 }
 
-async function parseAgents() {
+async function parseAgents(page) {
   let agentsInfo
-  const browser = await puppeteer.launch({ headless: true , executablePath: '/usr/bin/chromium-browser', args: ['--no-sandbox'] })
-  const page = await browser.newPage()
   try {
     // Go to website
     console.log('Going to https://my.b2b.jewelry/')
@@ -87,7 +94,7 @@ async function parseAgents() {
     await page.type('input[name=password]', process.env.B2B_PASS)
     await page.waitFor(1000)
     await page.click('button.btn.btn-theme')
-    await page.waitForSelector('div.page-wrap')
+    await page.waitForSelector('div.page-wrap', { timeout: 1000 * 60 * 2 }) // waiting for 2 minutes
 
     // Go to networks page
     console.log('Going to https://my.b2b.jewelry/network')
@@ -156,7 +163,8 @@ async function parseAgents() {
           })
           await quitModalWindow()
         }
-        //break  __________________________________________________ TODO: REMOVE THIS BREAK STATEMENT _____________________________________________________
+        // This break needed only for test reasons to check only first 12 agents
+        //break  //__________________________________________________ TODO: REMOVE THIS BREAK STATEMENT _____________________________________________________
       }
       return agentData
     })
