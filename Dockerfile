@@ -27,6 +27,7 @@ ENV CHROME_BIN=/usr/bin/chromium-browser \
     CHROME_PATH=/usr/lib/chromium/
 
 COPY ./package.json .
+COPY ./package-lock.json .
 
 RUN npm install
 
