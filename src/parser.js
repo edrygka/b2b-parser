@@ -13,7 +13,7 @@ module.exports = class ParsingB2B {
       this.page = await browser.newPage()
       console.log('Going to https://my.b2b.jewelry/')
       await this.page.goto('https://my.b2b.jewelry/', { waitUntil: 'networkidle2' })
-      await this.page.waitForNavigation()
+      await this.page.waitForSelector('.flag-icon.flag-icon-us.mr-1', { timeout: 1000 * 60 * 2 })
       return true
     } catch (err) {
       console.log(err)
