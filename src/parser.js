@@ -64,8 +64,8 @@ module.exports = class ParsingB2B {
       const currentPageNum = await wrapper.getCurrentPage(this.page)
       console.log(`Parser now on page ${currentPageNum}`)
 
+      const agentDataPerPage = []
       try {
-        const agentDataPerPage = []
         const agentIds = await wrapper.getAgentsId(this.page)
 
         for (let j = 0; j < agentIds.length; j++) {
