@@ -26,11 +26,10 @@ RUN mkdir -p /usr/src/app \
 ENV CHROME_BIN=/usr/bin/chromium-browser \
     CHROME_PATH=/usr/lib/chromium/
 
-COPY ./package.json .
-COPY ./package-lock.json .
+WORKDIR /tmp
+
+COPY . /tmp
 
 RUN npm install
-
-COPY . .
 
 CMD npm start
