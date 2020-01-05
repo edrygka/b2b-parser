@@ -11,12 +11,12 @@ module.exports = class ParsingB2B {
     try {
       const browser = await puppeteer.launch({ headless: true, executablePath: '/usr/bin/chromium-browser', args: ['--no-sandbox'] })
       this.page = await browser.newPage()
-      console.log('Going to https://my.b2b.jewelry/')
+      console.log('Parser> Going to https://my.b2b.jewelry/')
       await this.page.goto('https://my.b2b.jewelry/', { waitUntil: 'networkidle2' })
       await this.page.waitForSelector('.flag-icon.flag-icon-us.mr-1', { timeout: 1000 * 60 * 2 })
       return true
     } catch (err) {
-      console.log(err)
+      console.log(`Parser> Start failed with error ${err}`)
       return false
     }
   }
@@ -24,7 +24,7 @@ module.exports = class ParsingB2B {
   async auth () {
     try {
       // Input credentials to authorize parser
-      console.log('Started authorization step')
+      console.log('Parser> Started authorization step')
       // Choose ua phone format 
       await this.page.evaluate(() => {
         document.querySelectorAll('.dropdown-item').forEach(value => {
@@ -38,7 +38,7 @@ module.exports = class ParsingB2B {
       await this.page.waitForSelector('div.page-wrap', { timeout: 1000 * 60 * 2 }) // waiting for 2 minutes
       return true
     } catch (err) {
-      console.log(err)
+      console.log(`Parser> Authentication failed ${err}`)
       return false
     }
     
@@ -46,12 +46,12 @@ module.exports = class ParsingB2B {
 
   async parse () {
     // Go to networks page
-    console.log('Going to https://my.b2b.jewelry/network')
+    console.log('Parser> Going to https://my.b2b.jewelry/network')
     await this.page.goto('https://my.b2b.jewelry/network', { waitUntil: 'networkidle2' })
     await this.page.waitForSelector('#network-data')
 
     const maxPageNum = await wrapper.getMaxPageNum(this.page)
-    console.log(`${maxPageNum} Pages we are going to parse`)
+    console.log(`Parser> ${maxPageNum} Pages we are going to parse`)
     for (let i = 0; i < maxPageNum; i++) {
       if (i > 5) {
         await wrapper.clickToPage(this.page, 4)
@@ -62,7 +62,7 @@ module.exports = class ParsingB2B {
       }
       await Promise.delay(2000)
       const currentPageNum = await wrapper.getCurrentPage(this.page)
-      console.log(`Parser now on page ${currentPageNum}`)
+      console.log(`Parser> Parser now on page ${currentPageNum}`)
 
       const agentDataPerPage = []
       try {
@@ -75,10 +75,10 @@ module.exports = class ParsingB2B {
           await wrapper.quitAgentInfoWindow(this.page)
           
         }
-        console.log(`Parsed ${agentDataPerPage.length} agents(mostly should be equal to 12)`)
+        console.log(`Parser> Parsed ${agentDataPerPage.length} agents(mostly should be equal to 12)`)
         await db.saveToDatabase(agentDataPerPage)
       } catch (err) {
-        console.log(`Data ${JSON.stringify(agentDataPerPage)} proceed with error: ${err}`)
+        console.log(`Parser> Data ${JSON.stringify(agentDataPerPage)} proceed with error: ${err}`)
       }
     }
     return true

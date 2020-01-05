@@ -12,13 +12,13 @@ const DB_NAME = process.env.DB_NAME
 const connectionString = `postgres://${DB_USER}:${DB_PASS}@${DB_HOST}:${DB_PORT}/${DB_NAME}`
 
 module.exports.saveToDatabase = async (agentsInfo) => {
-  console.log('Trying connect to db')
+  console.log('Postgres> Trying connect to db')
   const pool = new Pool({
     connectionString: connectionString,
   })
-  console.log('Connection established succesfuly')
+  console.log('Postgres> Connection established succesfuly')
 
-  console.log('Saving agents to database...')
+  console.log('Postgres> Saving agents to database...')
   for (let i = 0; i < agentsInfo.length; i++) {
     const existingAgent = (await pool.query('SELECT * FROM agentsinfo WHERE agentid = $1',
       [ agentsInfo[i].agentId ])).rows[0]
@@ -47,9 +47,9 @@ module.exports.saveToDatabase = async (agentsInfo) => {
         agentsInfo[i].agents1Level, agentsInfo[i].agentsInNetwork, agentsInfo[i].oborotInMonth, agentHash ])
     }
   }
-  console.log('Saving completed')
+  console.log('Postgres> Saving completed')
 
   await pool.end()
-  console.log('Connection to db closed')
+  console.log('Postgres> Connection to db closed')
   
 }
