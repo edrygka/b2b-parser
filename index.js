@@ -11,6 +11,7 @@ const ParserB2B = new Parser()
 async function main() {
   logger.info('Initiated first parse process')
   const done = await proceedAgents()
+  logger.info('Finished initial parse process')
 
   // Start parsing every day in 6am 
   cron.schedule('0 4 * * *', async () => {

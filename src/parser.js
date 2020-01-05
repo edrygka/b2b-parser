@@ -82,6 +82,7 @@ module.exports = class ParsingB2B {
         logger.error(err, `Parser> Data ${JSON.stringify(agentDataPerPage)} proceed with error:`)
       }
     }
+    logger.info('Finished parsing process')
     return true
   }
 }
