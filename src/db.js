@@ -2,6 +2,7 @@
 
 const { Pool } = require('pg')
 const crypto = require('crypto')
+const logger = require('./logger')('Postgres')
 
 const DB_HOST = process.env.DB_HOST
 const DB_PORT = process.env.DB_PORT
@@ -12,13 +13,13 @@ const DB_NAME = process.env.DB_NAME
 const connectionString = `postgres://${DB_USER}:${DB_PASS}@${DB_HOST}:${DB_PORT}/${DB_NAME}`
 
 module.exports.saveToDatabase = async (agentsInfo) => {
-  console.log('Postgres> Trying connect to db')
+  logger.info('Trying connect to db')
   const pool = new Pool({
     connectionString: connectionString,
   })
-  console.log('Postgres> Connection established succesfuly')
+  logger.info('Connection established succesfuly')
 
-  console.log('Postgres> Saving agents to database...')
+  logger.info('Saving agents to database...')
   for (let i = 0; i < agentsInfo.length; i++) {
     const existingAgent = (await pool.query('SELECT * FROM agentsinfo WHERE agentid = $1',
       [ agentsInfo[i].agentId ])).rows[0]
@@ -47,9 +48,9 @@ module.exports.saveToDatabase = async (agentsInfo) => {
         agentsInfo[i].agents1Level, agentsInfo[i].agentsInNetwork, agentsInfo[i].oborotInMonth, agentHash ])
     }
   }
-  console.log('Postgres> Saving completed')
+  logger.info('Saving completed')
 
   await pool.end()
-  console.log('Postgres> Connection to db closed')
+  logger.info('Connection to db closed')
   
 }

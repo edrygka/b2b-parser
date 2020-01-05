@@ -2,17 +2,19 @@
 
 const cron = require('node-cron')
 require('dotenv').config()
+const logger = require('./src/logger')('Main')
 
 const Parser = require('./src/parser')
 const ParserB2B = new Parser()
 
 
 async function main() {
-  console.log('Main> Initiated first parse process')
+  logger.info('Initiated first parse process')
   const done = await proceedAgents()
 
+  // Start parsing every day in 6am 
   cron.schedule('0 4 * * *', async () => {
-    console.log('Main> Started cron job ')
+    logger.info('Started cron job ')
     // Check if parser already works
     if (done === true) {
       await proceedAgents()
@@ -20,7 +22,7 @@ async function main() {
   })
 
   process.on("unhandledRejection", async (reason, p) => {
-    console.error("Unhandled Rejection at: Promise", p, "reason:", reason)
+    logger.error(reason, `Unhandled Rejection at: Promise ${p}`)
   })
 }
 

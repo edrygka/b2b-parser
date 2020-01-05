@@ -16,7 +16,7 @@
     "dotenv": "^8.2.0",
     "node-cron": "^2.0.3",
     "pg": "^7.17.0",
-    "puppeteer": "^2.0.0",
-    "selenium-webdriver": "^4.0.0-alpha.5"
+    "pino": "^5.15.0",
+    "puppeteer": "^2.0.0"
   }
 }
