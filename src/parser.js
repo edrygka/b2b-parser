@@ -72,14 +72,15 @@ module.exports = class ParsingB2B {
         for (let j = 0; j < agentIds.length; j++) {
   
           await wrapper.openAgentInfoWindow(this.page, agentIds[j])
-          agentDataPerPage.push(await wrapper.getAgentInfo(this.page, agentIds[j]))
+          const agentInfo = await wrapper.getAgentInfo(this.page, agentIds[j])
+          agentDataPerPage.push(agentInfo)
           await wrapper.quitAgentInfoWindow(this.page)
           
         }
         logger.info(`Parsed ${agentDataPerPage.length} agents(mostly should be equal to 12)`)
         await db.saveToDatabase(agentDataPerPage)
       } catch (err) {
-        logger.error(err, `Parser> Data ${JSON.stringify(agentDataPerPage)} proceed with error:`)
+        logger.error(err, `Data ${JSON.stringify(agentDataPerPage)} proceed with error:`)
       }
     }
     logger.info('Finished parsing process')
