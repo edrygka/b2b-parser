@@ -17,19 +17,18 @@ module.exports.saveToDatabase = async (agentsInfo) => {
   const pool = new Pool({
     connectionString: connectionString,
   })
-  logger.info('Connection established succesfuly')
 
   logger.info('Saving agents to database...')
   for (let i = 0; i < agentsInfo.length; i++) {
     const existingAgent = (await pool.query('SELECT * FROM agentsinfo WHERE agentid = $1',
       [ agentsInfo[i].agentId ])).rows[0]
 
-    logger.info(agentsInfo[i], 'Pretends to be saved in database')
+    logger.debug(agentsInfo[i], 'Pretends to be saved in database')
     // Creating hashsum to check changes 
     const agentHash = crypto.createHash('md5').update(JSON.stringify(agentsInfo[i])).digest('hex')
     // If Agent already exist and was changed - update this record in db
     if (existingAgent && agentHash !== existingAgent.hashsum) {
-      logger.info('Agent exist but changed, going to update record in db')
+      logger.debug('Agent exist but changed, going to update record in db')
       await pool.query('UPDATE agentsinfo SET (name, phone, city, rang, oborot, ' + 
         'ownInvests, lastDateBuy, clientInvests, agents1Level, agentsInNetwork, ' + 
         'oborotInMonth, hashsum) = ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, ' + 
@@ -41,12 +40,12 @@ module.exports.saveToDatabase = async (agentsInfo) => {
     }
 
     if (existingAgent && agentHash === existingAgent.hashsum) {
-      logger.info('Agent exist but not changed, do nothing')
+      logger.debug('Agent exist but not changed, do nothing')
     }
 
     // If this agent not exist - create new record and write in db
     if (!existingAgent) {
-      logger.info('Agent not exist, going to save record in db')
+      logger.debug('Agent not exist, going to save record in db')
       await pool.query('INSERT INTO agentsinfo(agentid, name, phone, city, rang, ' +
       'oborot, ownInvests, lastDateBuy, clientInvests, agents1Level, agentsInNetwork, ' + 
       'oborotInMonth, hashsum) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)', 
@@ -58,6 +57,6 @@ module.exports.saveToDatabase = async (agentsInfo) => {
   logger.info('Saving completed')
 
   await pool.end()
-  logger.info('Connection to db closed')
+  logger.debug('Connection to db closed')
   
 }

@@ -77,7 +77,7 @@ module.exports = class ParsingB2B {
           await wrapper.quitAgentInfoWindow(this.page)
           
         }
-        logger.info(`Parsed ${agentDataPerPage.length} agents(mostly should be equal to 12)`)
+        logger.debug(`Parsed ${agentDataPerPage.length} agents(mostly should be equal to 12)`)
         await db.saveToDatabase(agentDataPerPage)
       } catch (err) {
         logger.error(err, `Data ${JSON.stringify(agentDataPerPage)} proceed with error:`)
