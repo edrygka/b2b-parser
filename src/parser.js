@@ -18,6 +18,8 @@ module.exports = class ParsingB2B {
       return true
     } catch (err) {
       logger.error(err, 'Start failed with error')
+      const screenshotName = new Date().toLocaleString().replace( /\s/g, '').replace(/\//g, '-')
+      await this.page.screenshot({path: `logs/error-${screenshotName}.png`})
       return false
     }
   }
@@ -39,7 +41,9 @@ module.exports = class ParsingB2B {
       await this.page.waitForSelector('div.page-wrap', { timeout: 1000 * 60 * 2 }) // waiting for 2 minutes
       return true
     } catch (err) {
-      logger.error(err, 'Authentication failed')
+      logger.error(err, 'Authentication failed with error')
+      const screenshotName = new Date().toLocaleString().replace( /\s/g, '').replace(/\//g, '-')
+      await this.page.screenshot({path: `logs/error-${screenshotName}.png`})
       return false
     }
     
@@ -81,6 +85,8 @@ module.exports = class ParsingB2B {
         await db.saveToDatabase(agentDataPerPage)
       } catch (err) {
         logger.error(err, `Data ${JSON.stringify(agentDataPerPage)} proceed with error:`)
+        const screenshotName = new Date().toLocaleString().replace( /\s/g, '').replace(/\//g, '-')
+        await this.page.screenshot({path: `logs/error-${screenshotName}.png`})
       }
     }
     logger.info('Finished parsing process')

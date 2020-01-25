@@ -38,10 +38,17 @@ async function main() {
 }
 
 async function proceedAgents() {
-  await ParserB2B.start()
-  await ParserB2B.auth()
-  await ParserB2B.parse()
-  return true
+  const started = await ParserB2B.start()
+  if (started) {
+    const authenticated = await ParserB2B.auth()
+    if (authenticated) {
+      const parsed = await ParserB2B.parse()
+      if (parsed) {
+        return true
+      }
+    }
+  }
+  return false
 }
 
 main()
