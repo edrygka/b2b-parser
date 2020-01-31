@@ -3,18 +3,18 @@
 const Promise = require("bluebird")
 
 // Move page to next pagination page
-module.exports.clickToPage = async (page, num) =>
+exports.clickToPage = async (page, num) =>
   await page.evaluate((num) => document.querySelectorAll('.paginationjs-page.J-paginationjs-page')[num].click(), num)
 
 // Returns max pagination page number
-module.exports.getMaxPageNum = async (page) => await page.$$eval('.paginationjs-page.J-paginationjs-page', element => element[5].innerText)
+exports.getMaxPageNum = async (page) => await page.$$eval('.paginationjs-page.J-paginationjs-page', element => element[5].innerText)
 
 // Returns current page number
-module.exports.getCurrentPage = async (page) =>
+exports.getCurrentPage = async (page) =>
   await page.$eval('.paginationjs-page.J-paginationjs-page.active', page => page.children[0].innerText)
 
 // Collects all agent ids from current page
-module.exports.getAgentsId = async (page) => {
+exports.getAgentsId = async (page) => {
   const result = await page.evaluate(() => {
     const agentIds = []
     document.querySelectorAll('.col-xl-3.col-lg-6.col-md-4').forEach(value => {
@@ -28,19 +28,19 @@ module.exports.getAgentsId = async (page) => {
 }
 
 // opens agent info modal window
-module.exports.openAgentInfoWindow = async (page, id) => {
+exports.openAgentInfoWindow = async (page, id) => {
   await Promise.delay(1000)
   await page.evaluate((id) => agentInfoDetails(id), id)
 }
 
 // quit agent info modal window
-module.exports.quitAgentInfoWindow = async (page) => {
+exports.quitAgentInfoWindow = async (page) => {
   await Promise.delay(2000)
   await page.$eval('.ik.ik-x.ik-3x', (quit) => quit.click())
 }
 
 // Returns agentInfo taking from modal window
-module.exports.getAgentInfo = async (page, id) => {
+exports.getAgentInfo = async (page, id) => {
   await Promise.delay(5000) // Set delay cause this function could be triggered earlier than element will appear in DOM
   const info = await page.evaluate((id) => {
     const cat1 = document.querySelectorAll('p.text-muted.mb-0')

@@ -85,8 +85,6 @@ module.exports = class ParsingB2B {
         await db.saveToDatabase(agentDataPerPage)
       } catch (err) {
         logger.error(err, `Data ${JSON.stringify(agentDataPerPage)} proceed with error:`)
-        const screenshotName = new Date().toLocaleString().replace( /\s/g, '').replace(/\//g, '-')
-        await this.page.screenshot({path: `logs/error-${screenshotName}.png`})
       }
     }
     logger.info('Finished parsing process')

@@ -12,7 +12,7 @@ const DB_NAME = process.env.DB_NAME
 
 const connectionString = `postgres://${DB_USER}:${DB_PASS}@${DB_HOST}:${DB_PORT}/${DB_NAME}`
 
-module.exports.saveToDatabase = async (agentsInfo) => {
+exports.saveToDatabase = async (agentsInfo) => {
   logger.info('Trying connect to db')
   const pool = new Pool({
     connectionString: connectionString,
