@@ -17,7 +17,7 @@ exports.getCurrentPage = async (page) =>
 exports.getAgentsId = async (page) => {
   const result = await page.evaluate(() => {
     const agentIds = []
-    document.querySelectorAll('.col-xl-3.col-lg-6.col-md-4').forEach(value => {
+    document.querySelectorAll('.col-xl-4.col-md-6').forEach(value => {
       const func = value.children[0].children[0].children[6].children[0].getAttribute('onclick')
       const agentId = func.substring(func.indexOf('(') + 1, func.indexOf(')'))
       agentIds.push(agentId)
@@ -51,13 +51,13 @@ exports.getAgentInfo = async (page, id) => {
       phone: cat1[2].innerHTML,
       city: cat1[3].innerHTML,
       rang: cat2[0].innerHTML.substring(0, cat2[0].innerHTML.indexOf('<')) + cat2[0].children[0].innerHTML,
-      oborot: cat2[1].innerHTML,
-      ownInvests: cat2[2].innerHTML,
+      oborot: cat2[1].innerHTML.substring(0, cat2[1].innerHTML.lastIndexOf(',')).replace(',', ''),
+      ownInvests: cat2[2].innerHTML.substring(0, cat2[2].innerHTML.lastIndexOf(',')).replace(',', ''),
       lastDateBuy: cat2[3].innerHTML,
-      clientInvests: cat2[4].innerHTML,
+      clientInvests: (Number(cat2[4].innerHTML) !== 0) ? cat2[4].innerHTML.replace(',', '') : cat2[4].innerHTML,
       agents1Level: cat2[5].innerHTML,
       agentsInNetwork: cat2[6].innerHTML,
-      oborotInMonth: cat2[7].innerHTML,
+      oborotInMonth: cat2[7].innerHTML.substring(0, cat2[7].innerHTML.lastIndexOf(',')).replace(',', ''),
     }
   }, id)
   return info
