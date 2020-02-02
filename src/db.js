@@ -34,9 +34,9 @@ exports.saveToDatabase = async (agentsInfo) => {
         'oborotInMonth, hashsum) = ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, ' + 
         '$12) WHERE agentid = $13', 
         [ agentsInfo[i].name, agentsInfo[i].phone, agentsInfo[i].city, agentsInfo[i].rang, 
-          agentsInfo[i].oborot, agentsInfo[i].ownInvests, agentsInfo[i].lastDateBuy, 
-          agentsInfo[i].clientInvests, agentsInfo[i].agents1Level, agentsInfo[i].agentsInNetwork, 
-          agentsInfo[i].oborotInMonth, agentHash, agentsInfo[i].agentId ])
+          Number(agentsInfo[i].oborot), Number(agentsInfo[i].ownInvests), agentsInfo[i].lastDateBuy, 
+          Number(agentsInfo[i].clientInvests), agentsInfo[i].agents1Level, agentsInfo[i].agentsInNetwork, 
+          Number(agentsInfo[i].oborotInMonth), agentHash, agentsInfo[i].agentId ])
     }
 
     if (existingAgent && agentHash === existingAgent.hashsum) {
@@ -50,8 +50,8 @@ exports.saveToDatabase = async (agentsInfo) => {
       'oborot, ownInvests, lastDateBuy, clientInvests, agents1Level, agentsInNetwork, ' + 
       'oborotInMonth, hashsum) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)', 
       [ agentsInfo[i].agentId, agentsInfo[i].name, agentsInfo[i].phone, agentsInfo[i].city, agentsInfo[i].rang,
-        agentsInfo[i].oborot, agentsInfo[i].ownInvests, agentsInfo[i].lastDateBuy, agentsInfo[i].clientInvests,
-        agentsInfo[i].agents1Level, agentsInfo[i].agentsInNetwork, agentsInfo[i].oborotInMonth, agentHash ])
+        Number(agentsInfo[i].oborot), Number(agentsInfo[i].ownInvests), agentsInfo[i].lastDateBuy, Number(agentsInfo[i].clientInvests),
+        agentsInfo[i].agents1Level, agentsInfo[i].agentsInNetwork, Number(agentsInfo[i].oborotInMonth), agentHash ])
     }
   }
   logger.info('Saving completed')
