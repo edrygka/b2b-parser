@@ -10,16 +10,19 @@ const ParserB2B = new Parser()
 
 async function main() {
   logger.info('Initiated first parse process')
-  let done = false // Flag to signal when we can parse
-  done = await proceedAgents()
+  let busy = true // Flag to signal when we can parse
+  await proceedAgents()
+  busy = false
   logger.info('Finished initial parse process')
 
   // Start parsing every day at 2am 
   cron.schedule('0 0 * * *', async () => {
     logger.info('Started cron job ')
     // Check if parser already works
-    if (done === true) {
-      done = await proceedAgents()
+    if (busy === false) {
+      busy = true
+      await proceedAgents()
+      busy = false
     }
   })
 
@@ -27,8 +30,10 @@ async function main() {
   cron.schedule('0 12 * * *', async () => {
     logger.info('Started cron job ')
     // Check if parser already works
-    if (done === true) {
-      done = await proceedAgents()
+    if (busy === false) {
+      busy = true
+      await proceedAgents()
+      busy = true
     }
   })
 
@@ -38,17 +43,9 @@ async function main() {
 }
 
 async function proceedAgents() {
-  const started = await ParserB2B.start()
-  if (started) {
-    const authenticated = await ParserB2B.auth()
-    if (authenticated) {
-      const parsed = await ParserB2B.parse()
-      if (parsed) {
-        return true
-      }
-    }
-  }
-  return false
+  await ParserB2B.start()
+  await ParserB2B.auth()
+  await ParserB2B.parse()
 }
 
 main()
