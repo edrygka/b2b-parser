@@ -33,7 +33,7 @@ async function main() {
     if (busy === false) {
       busy = true
       await proceedAgents()
-      busy = true
+      busy = false
     }
   })
 
